@@ -1,1 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Frame Studio Pro</title>
+
+<style>
+:root{
+  --bg1:#e8ecf3;
+  --bg2:#f4f6fb;
+  --panel:rgba(255,255,255,0.88);
+  --accent:#9bb3d8;
+  --text:#2c2c2c;
+  --radius:16px;
+  --shadow:0 12px 32px rgba(0,0,0,0.08);
+  font-family:"Segoe UI",system-ui,sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(120deg,var(--bg1),var(--bg2));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+@keyframes chameleon{
+  0%{filter:hue-rotate(0deg)}
+  100%{filter:hue-rotate(360deg)}
+}
+
+.studio{
+  width:360px;
+  background:var(--panel);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+  animation:chameleon 50s linear infinite;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.header h2{
+  font-size:16px;
+  margin:0;
+}
+
+select{
+  font-size:12px;
+}
+
+.preview{
+  position:relative;
+  width:100%;
+  height:220px;
+  background:#dde3ef;
+  border-radius:12px;
+  overflow:hidden;
+  margin-top:12px;
+}
+
+.preview img{
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.controls{
+  margin-top:12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+button{
+  flex:1;
+  padding:6px;
+  font-size:12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:var(--accent);
+  color:white;
+}
+
+button.secondary{
+  background:#cfdaf0;
+  color:#2c2c2c;
+}
+
+label{
+  font-size:11px;
+  margin-top:6px;
+  display:block;
+}
+
+input[type="range"],
+input[type="number"],
+input[type="color"]{
+  width:100%;
+}
+
+iframe-box{
+  margin-top:10px;
+}
+textarea{
+  width:100%;
+  font-size:11px;
+  height:60px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="studio">
+  <div class="header">
+    <h2 id="title">Photo Frame Studio Pro</h2>
+    <select id="lang">
+      <option value="ru">Русский</option>
+      <option value="en">English</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+      <option value="it">Italiano</option>
+      <option value="zh">中文</option>
+      <option value="ar">العربية</option>
+      <option value="hi">हिन्दी</option>
+    </select>
+  </div>
+
+  <div class="preview" id="frame">
+    <img id="photo">
+    <img id="overlay">
+  </div>
+
+  <div class="controls">
+    <input type="file" accept="image/*" id="photoUpload" hidden>
+    <input type="file" accept="image/png,image/svg+xml" id="frameUpload" hidden>
+
+    <button onclick="photoUpload.click()">Фото</button>
+    <button onclick="frameUpload.click()" class="secondary">Рамка</button>
+  </div>
+
+  <label>Скругление</label>
+  <input type="range" min="0" max="40" value="12" id="radius">
+
+  <label>Тень</label>
+  <input type="range" min="0" max="30" value="12" id="shadow">
+
+  <label>Цвет фона</label>
+  <input type="color" id="bgColor" value="#dde3ef">
+
+  <label>Размер iframe</label>
+  <div style="display:flex;gap:6px">
+    <input type="number" id="w" value="380">
+    <input type="number" id="h" value="420">
+  </div>
+
+  <label>iframe для Genially</label>
+  <textarea id="iframe"></textarea>
+</div>
+
+<script>
+const photo=document.getElementById("photo");
+const overlay=document.getElementById("overlay");
+const frame=document.getElementById("frame");
+
+photoUpload.onchange=e=>{
+  const f=e.target.files[0];
+  if(f) photo.src=URL.createObjectURL(f);
+};
+
+frameUpload.onchange=e=>{
+  const f=e.target.files[0];
+  if(f) overlay.src=URL.createObjectURL(f);
+};
+
+radius.oninput=()=>frame.style.borderRadius=radius.value+"px";
+shadow.oninput=()=>frame.style.boxShadow=`0 ${shadow.value}px ${shadow.value*2}px rgba(0,0,0,0.2)`;
+bgColor.oninput=()=>frame.style.background=bgColor.value;
+
+function updateIframe(){
+iframe.value=
+`<iframe src="https://ТВОЙ_НИК.github.io/photo-frame/"
+width="${w.value}"
+height="${h.value}"
+style="border:none;border-radius:16px;"></iframe>`;
+}
+
+[w,h].forEach(i=>i.oninput=updateIframe);
+updateIframe();
+</script>
+
+</body>
+</html>
 
